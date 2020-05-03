@@ -1,1 +1,127 @@
-hello world
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Motion-profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Web application behavior yes=stand alone, no=opens in browser-->
+  <meta name="apple-mobile-web-app-capable" content="no">
+
+  <!-- icon for the entire website -->
+  <!-- this cause the node.js app to not display the icon anymore -->
+  <link rel="apple-touch-icon" href="./app.png">
+
+  <!-- Adding a Launch Icon Title -->
+  <meta name="apple-mobile-web-app-title" content="Motion-profile">
+
+  <!-- Specifying a Launch Screen Image -->
+  <link rel="apple-touch-startup-image" href="./app.png">
+
+
+  <!-- <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> -->
+  <link rel="stylesheet" href="./css/w3.css">
+
+  <style>
+    .w3-input:focus,
+    .w3-btn:focus {
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2), 0px 6px 20px 0px rgba(0, 0, 0, 0.19);
+    }
+
+    .w3-input:focus {
+      background: lightyellow;
+    }
+  </style>
+
+  <script src="./js/jquery-3.4.1.min.js"></script>
+
+</head>
+
+<body>
+
+  <div id="header" class="w3-container w3-center w3-blue">
+    <!-- HTML inserted by JS -->
+  </div>
+
+  <div id="top-menu-buttons" class="w3-bar w3-blue w3-padding-small">
+    <!-- HTML inserted by JS -->
+  </div>
+
+
+  <!-- Modal for editing parameters -->
+  <div id="edit-overlay" class="w3-modal w3-animate-opacity">
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom w3-light-grey" style="max-width:600px">
+      <div class="w3-center">
+        <a class="w3-xlarge">Edit</a>
+        <span onclick="document.getElementById('edit-overlay').style.display='none'" class="w3-button w3-xlarge w3-hover w3-display-topright" title="Close Modal">&times;</span>
+      </div>
+
+      <div class="w3-container">
+        <div id="edit-inputs" class="w3-section">
+          <!-- HTML inserted by JS -->
+        </div>
+      </div>
+      <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+        <button id="save" type="button" class="w3-button w3-block w3-green" disabled>Save</button>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <div id="main" class="w3-container w3-light-grey">
+
+    <!-- List parameters -->
+    <p class=" w3-large">Parameters</p>
+    <div id="parameters" class="w3-container w3-section" style="min-height:150px">
+      <!-- HTML inserted by JS -->
+    </div>
+
+
+
+    <!-- Charts -->
+    <p class=" w3-large">Motion phases</p>
+    <div id="phase-charts" class="w3-container w3-white w3-section" style="min-height:150px">
+
+      <div class="w3-container w3-col l4">
+        <p class="w3-center">Acceleration</p>
+        <div id="chartAcceleration"></div>
+      </div>
+
+      <div class="w3-container w3-col l4">
+        <p class="w3-center">Velocity</p>
+        <div id="chartVelocity"></div>
+      </div>
+
+      <div class="w3-container w3-col l4">
+        <p class="w3-center">Displacement</p>
+        <div id="chartDisplacement"></div>
+      </div>
+    </div>
+
+    <p class=" w3-large">Profile</p>
+    <div id="profile-charts" class="w3-container w3-white w3-section" style="min-height:150px">
+      <p class="w3-center">Displacement</p>
+      <div id="chartProfile"></div>
+
+    </div>
+
+    <div class="w3-container w3-blue w3-tiny">
+      <p>2020 Bertus</p>
+    </div>
+
+    <!-- Load sources for the charts -->
+    <link href="./css/c3.css" rel="stylesheet">
+    <script src="./js/c3.min.js"></script>
+    <script src="./js/d3-5.8.2.min.js" charset="utf-8"></script>
+
+    <!-- Load sources for toast notifications -->
+    <link href="./css/toastr.min.css" rel="stylesheet">
+    <script src="./js/toastr.min.js"></script>
+
+    <!-- Load app -->
+    <script src="./app.js"></script>
+</body>
+
+</html>
