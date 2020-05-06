@@ -49,11 +49,11 @@
 
 
   <!-- Modal for editing parameters -->
-  <div id="edit-overlay" class="w3-modal">
+  <div id="edit-overlay" class="w3-modal w3-animate-opacity">
     <div class="w3-modal-content w3-card-4 w3-animate-zoom w3-light-grey" style="max-width:600px">
       <div class="w3-center">
         <a class="w3-xlarge">Edit</a>
-        <span onclick="document.getElementById('edit-overlay').style.display='none'" class="w3-button w3-xlarge w3-hover w3-display-topright" title="Close Modal">&times;</span>
+        <span onclick="document.getElementById('edit-overlay').style.display='none'" class="w3-button w3-xlarge w3-hover-red w3-display-topright" title="Close Modal">&times;</span>
       </div>
 
       <div class="w3-container">
@@ -84,17 +84,17 @@
     <p class=" w3-large">Motion phases</p>
     <div id="phase-charts" class="w3-container w3-white w3-section" style="min-height:150px">
 
-      <div class="w3-container w3-col l4">
+      <div class="w3-col l4">
         <p class="w3-center">Acceleration</p>
         <div id="chartAcceleration"></div>
       </div>
 
-      <div class="w3-container w3-col l4">
+      <div class="w3-col l4">
         <p class="w3-center">Velocity</p>
         <div id="chartVelocity"></div>
       </div>
 
-      <div class="w3-container w3-col l4">
+      <div class="w3-col l4">
         <p class="w3-center">Displacement</p>
         <div id="chartDisplacement"></div>
       </div>
@@ -106,22 +106,38 @@
       <div id="chartProfile"></div>
 
     </div>
+  </div>
 
-    <div class="w3-container w3-blue w3-tiny">
-      <p>2020 Bertus</p>
-    </div>
+  <div class="w3-container w3-blue w3-tiny">
+    <p>2020 Bertus</p>
+  </div>
 
-    <!-- Load sources for the charts -->
-    <link href="./css/c3.css" rel="stylesheet">
-    <script src="./js/c3.min.js"></script>
-    <script src="./js/d3-5.8.2.min.js" charset="utf-8"></script>
 
-    <!-- Load sources for toast notifications -->
-    <link href="./css/toastr.min.css" rel="stylesheet">
-    <script src="./js/toastr.min.js"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <!-- Load app -->
-    <script src="./app.js"></script>
+
+  <!-- Load sources for the charts -->
+  <link href="./css/c3.css" rel="stylesheet">
+  <script src="./js/c3.min.js"></script>
+  <script src="./js/d3-5.8.2.min.js" charset="utf-8"></script>
+
+  <style>
+    .c3-line {
+      stroke-width: 1.5px;
+    }
+
+    #chartDisplacement .c3-line {
+      display: none;
+    }
+  </style>
+
+  <!-- Load sources for toast notifications -->
+  <link href="./css/toastr.min.css" rel="stylesheet">
+  <script src="./js/toastr.min.js"></script>
+
+  <!-- Load app -->
+  <script src="./app.js"></script>
 </body>
 
 </html>
