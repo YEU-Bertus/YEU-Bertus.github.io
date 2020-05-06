@@ -1,16 +1,9 @@
 // 'use strict';
 
-// var fs = require('fs');
-// var gui = require('nw.gui');
-
-// var settings = JSON.parse(fs.readFileSync('settings.json'));
-// var menuItems = [];
-
 var phases = [];
 var xAxisMax = 5000;
 var phases;
 var points;
-// var jobContent;
 var wto;
 
 var chartAcceleration;
@@ -38,7 +31,6 @@ toastr.options = {
 };
 
 
-const CLASSTEXT = 'w3-btn w3-margin-right w3-margin-bottom w3-ripple w3-border w3-border-blue  w3-round-xxlarge';
 const CLASSTEXT_BUTTON = 'w3-bar-item w3-button w3-hover-white w3-border-white';
 
 
@@ -53,17 +45,29 @@ $(document).ready(function () {
   phases = calcMotionPhases(prm);
   points = calcMotionPoints(prm, phases);
 
+
   // insert the HTML items
   drawScreen();
+  drawCharts();
 
   // update the screen
   updateScreen(prm, phases, points);
 
-  drawCharts();
 
 
   $("#reset").click(function () {
-    window.location = window.location.href.replace(window.location.search, '');
+
+    if (confirm("Reset parameters?")) {
+      prm = loadDefaultPrm();
+      updateUrl(prm);
+
+      // calculate motion
+      phases = calcMotionPhases(prm);
+      points = calcMotionPoints(prm, phases);
+
+      // update the screen
+      updateScreen(prm, phases, points);
+    };
   });
 
   $("#edit").click(function () {
@@ -89,7 +93,7 @@ $(document).ready(function () {
   });
 
   $("#share").click(function () {
-    // update the URL 
+    //  the URL 
     updateUrl(prm);
 
     // copy to clipboard
@@ -116,16 +120,19 @@ $(document).ready(function () {
 
 
 
+
+
 function drawCharts() {
+
   chartAcceleration = c3.generate({
     bindto: '#chartAcceleration',
-    line: {
-      step: {
-        type: 'step-after'
-      }
+    spline: {
+      interpolation: {
+        type: "step-after"
+      },
     },
     data: {
-      type: 'step',
+      type: 'spline',
       colors: {
         a: '#808080',
         aPerc: '#ff0000',
@@ -144,44 +151,46 @@ function drawCharts() {
         a: 'y',
       }
     },
-    grid: {
-      x: {
-        // show: true,
-        // lines: [
-        //   { value: 500, text: 'Label on 100' },
-        //   { value: 1100, text: 'Label on 200', class: 'label-200' },
-        //   { value: 2500, text: 'Label on 300', position: 'middle' }
-        // ]
-      },
-      y: {
-        show: true
-      }
-    },
+    // grid: {
+    //   y: {
+    //     show: true
+    //   }
+    // },
     axis: {
       x: {
+        // show: false,
         label: {
           text: '[ms]',
-          position: 'outer'
+          // position: 'outer'
         },
         min: 0,
         max: xAxisMax,
         tick: {
-          fit: false
+          // count: 3,
+          fit: false,
+          rotate: 45,
+          // culling: true,
+          // culling: {
+          //   max: 5
+          // }
         }
       },
       y: {
+        // show: false,
+        // inner: true,
         label: {
           text: '[mm/s²]',
-          position: 'outer'
+          // position: 'outer'
         },
         min: -1500,
         max: 1500,
       },
       y2: {
         show: true,
+        // inner: true,
         label: {
           text: '[%] (scaled)',
-          position: 'outer'
+          // position: 'outer'
         },
         min: -100,
         max: 100,
@@ -193,7 +202,7 @@ function drawCharts() {
 
     tooltip: {
       // position: function (data, width, height, element) {
-      //   console.log(data[0]);
+      //   // console.log(data[0]);
       //   return {top: 0, left: 0};
       // },
 
@@ -206,12 +215,20 @@ function drawCharts() {
     //   enabled: true,
     //   type: 'drag'
     // }
+    transition: {
+      duration: 1000
+    }
   });
 
   chartVelocity = c3.generate({
     bindto: '#chartVelocity',
+    spline: {
+      interpolation: {
+        type: "linear"
+      },
+    },
     data: {
-      type: 'line',
+      type: 'spline',
       colors: {
         v0: '#008000',
       },
@@ -234,7 +251,7 @@ function drawCharts() {
         // ]
       },
       y: {
-        show: true
+        // show: true
       }
     },
     axis: {
@@ -272,12 +289,20 @@ function drawCharts() {
     //   enabled: true,
     //   type: 'drag'
     // }
+    transition: {
+      duration: 1000
+    }
   });
 
   chartDisplacement = c3.generate({
     bindto: '#chartDisplacement',
+    spline: {
+      interpolation: {
+        type: "linear"
+      },
+    },
     data: {
-      type: 'scatter',
+      type: 'spline',
       colors: {
         s0: '#0000ff',
       },
@@ -300,7 +325,7 @@ function drawCharts() {
         // ]
       },
       y: {
-        show: true
+        // show: true
       }
     },
     axis: {
@@ -338,12 +363,20 @@ function drawCharts() {
     //   enabled: true,
     //   type: 'drag'
     // }
+    transition: {
+      duration: 1000
+    }
   });
 
   chartProfile = c3.generate({
     bindto: '#chartProfile',
+    spline: {
+      interpolation: {
+        type: "linear"
+      },
+    },
     data: {
-      type: 'line',
+      type: 'spline',
       colors: {
         s: '#0000ff',
       },
@@ -373,7 +406,7 @@ function drawCharts() {
         },
       },
       y: {
-        show: true
+        // show: true
       }
     },
     axis: {
@@ -405,12 +438,20 @@ function drawCharts() {
       format: {
         title: function (x, index) { return Number(x).toFixed(0) + ' ms (#' + index + ')'; },
         value: function (value, ratio, id, index) { return Number(value).toFixed(2); },
-      }
+      },
+
+      // position: function (data, width, height, element) {
+      //   // console.log(data[0]);
+      //   return { top: 0, left: 0 };
+      // },
     },
     // zoom: {
     //   enabled: true,
     //   type: 'drag'
     // }
+    transition: {
+      duration: 1000
+    }
   });
 
 
@@ -419,14 +460,38 @@ function drawCharts() {
 
 
 function updateCharts() {
-  console.log(chartAcceleration);
-  chartAcceleration.toggle();
-  // chartAcceleration.load({
-  //   data: {
-  //     json: phases, // JSON object containing the chart data
-  //   }
-  // });
-  // chartVelocity.load();
+  chartAcceleration.load({
+    json: phases,
+    keys: {
+      x: 't0',
+      value: ['a', 'aPerc']
+    }
+  });
+
+  chartVelocity.load({
+    json: phases,
+    keys: {
+      x: 't0',
+      value: ['v0']
+    }
+  });
+
+  chartDisplacement.load({
+    json: phases,
+    keys: {
+      x: 't0',
+      value: ['s0']
+    }
+  });
+
+  chartProfile.load({
+    json: points,
+    keys: {
+      x: 't',
+      value: ['s']
+    }
+  });
+
 }
 
 
@@ -434,7 +499,7 @@ function updateScreen(prm, phases, points) {
   // list parameters
   listParameters("#parameters", prm);
 
-
+  updateCharts();
 };
 
 
@@ -448,29 +513,10 @@ function drawScreen() {
 
 
   // Menu buttons
-  // appendHtml('#top-menu-buttons', `<button id="reset" class="w3-bar-item w3-button w3-hover-white w3-border-white">reset</button>`);
-  // appendHtml('#top-menu-buttons', `<button id="edit" class="w3-bar-item w3-button w3-hover-white w3-border-white">edit</button>`);
-
-  drawButton('#top-menu-buttons', 'reset', CLASSTEXT_BUTTON);
-  drawButton('#top-menu-buttons', 'edit', CLASSTEXT_BUTTON);
-  drawButton('#top-menu-buttons', 'share', CLASSTEXT_BUTTON);
-  drawButton('#top-menu-buttons', 'export job', CLASSTEXT_BUTTON);
-
-  // updateInputFields("#settings-inputs", prm);
-
-  // prf = (prf !== undefined) ? points : 0;
-  // // labels = settings.points[prf].labels;
-  // // templateText = settings.points[prf].template;
-
-
-  // // set menu indicators
-  // setMenuIndicator(".top-menu-selection", prf, "w3-border-bottom");
-  // $('#points').text(settings.points[prf].name);
-
-  // write INFORM job content
-  // var html = `<pre>${jobContent}</pre>`;
-  // $('#job-content').append($(html));
-
+  drawButton('#top-menu-buttons', 'reset', CLASSTEXT_BUTTON, 'fa-home');
+  drawButton('#top-menu-buttons', 'share', CLASSTEXT_BUTTON, 'fa-share');
+  drawButton('#top-menu-buttons', 'save job', CLASSTEXT_BUTTON, 'fa-save');
+  drawButton('#top-menu-buttons', 'edit', CLASSTEXT_BUTTON, 'fa-sliders');
 }
 
 // ---------------------------------------------------------------------------------
@@ -708,8 +754,8 @@ function loadDefaultPrm() {
   p.vSet = { value: 150, units: 'mm/s', type: 'number', range: [1, 1500], step: 0.1, desc: 'velocity setpoint' };
   p.tRamp = { value: 1000, units: 'ms', type: 'number', range: [50, 5000], step: 1, desc: 'duration of the acceleration ramp' };
   p.tx = { value: 250, units: 'ms', type: 'number', range: [0, 5000], step: 0.1, desc: 'duration of the first/last part of the acceleration ramp' };
-  p.a0 = { value: 60, units: 'mm/s²', type: 'number', range: [0, 100], step: 0.1, desc: 'acceleration for first part of the acceleration ramp' };
-  p.a1 = { value: 40, units: 'mm/s²', type: 'number', range: [0, 100], step: 0.1, desc: 'acceleration for last part of the acceleration ramp' };
+  p.a0 = { value: 60, units: '%', type: 'number', range: [0, 100], step: 0.1, desc: 'acceleration for first part of the acceleration ramp' };
+  p.a1 = { value: 40, units: '%', type: 'number', range: [0, 100], step: 0.1, desc: 'acceleration for last part of the acceleration ramp' };
   p.tDelta = { value: 4, units: 'ms', type: 'number', range: [4, 40], step: 4, desc: 'interval time for motion commands (must be a multiplication of 4)' };
   // p.fileName = { value: 'OFFLINE', type: 'text', desc: 'filename for the generated INFORM job' };
   return p;
@@ -740,7 +786,7 @@ function loadQueryPrm(prm) {
 }
 
 /**
- * Update the URL by write the parameter object to the URL query.
+ *  the URL by write the parameter object to the URL query.
  * @param {object} prm - The parameters object 
  */
 function updateUrl(prm) {
@@ -975,71 +1021,9 @@ function calcMotionPoints(prm, phases) {
 }
 
 
-function drawButton(selector, label, classText) {
-  const buttonHTML = `<button id="${label.replace(" ", "-")}" class="${classText}">${label}</button>`;
+function drawButton(selector, label, classText, fontAwesomeIcon) {
+  var buttonHTML = `<button id="${label.replace(" ", "-")}" class="${classText}">`;
+  String(fontAwesomeIcon).indexOf('fa-') === 0 ? buttonHTML += ` <i class="w3-xlarge fa ${fontAwesomeIcon}" style="width:50px"></i>` : null;
+  buttonHTML += `<label class="w3-hide-small">${label}</label></button>`;
   $(selector).append($(buttonHTML));
 }
-
-
-
-
-
-// ----------- OLD -----------
-{
-
-  function calcMotion() {
-    console.log('recalc all');
-    // clear job content
-    $('#job-content').detach();
-
-    // calculate phases
-    phases = calcMotionPhases(prm);
-
-    // calculate points from phases
-    points = calcMotionPoints(prm, phases);
-
-    // update charts
-    // updateCharts();
-
-
-  }
-
-
-
-  // function drawButtons(selector, arr, classText) {
-  //   for (let index = 0; index < arr.length; index++) {
-  //     const buttonHTML = `<button id="${arr[index]}" value="0" class="${classText}">${(arr[index]).replace("MLx-", "")}</button>`;
-  //     $(selector).append($(buttonHTML));
-  //   }
-  // }
-
-
-  // function drawMenu(selector, arr, classText) {
-  //   for (let index = 0; index < arr.length; index++) {
-  //     const buttonHTML = `<a tabindex="-1" value="${index}" class="${classText}">${(arr[index])}</a>`;
-  //     $(selector).append($(buttonHTML));
-  //   }
-  // }
-
-
-  // function setMenuIndicator(selector, index, classText) {
-  //   $(selector).removeClass(classText);
-  //   $($(selector)[index]).addClass(classText);
-  // }
-
-
-  // function w3_open() {
-  //   document.getElementById("mobile-menu-buttons").style.display = "block";
-  //   document.getElementById("overlay").style.display = "block";
-  // }
-
-  // function w3_close() {
-  //   // document.getElementById("mobile-menu-buttons").style.display = "none";
-  //   document.getElementById("edit-overlay").style.display = "none";
-  // }
-
-
-
-}
-
-
