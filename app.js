@@ -1023,7 +1023,7 @@ function calcMotionPoints(prm, phases) {
 
 function drawButton(selector, label, classText, fontAwesomeIcon) {
   var buttonHTML = `<button id="${label.replace(" ", "-")}" class="${classText}">`;
-  String(fontAwesomeIcon).indexOf('fa-') === 0 ? buttonHTML += ` <i class="w3-xlarge fa ${fontAwesomeIcon}" style="width:50px"></i>` : null;
+  String(fontAwesomeIcon).indexOf('fa-') === 0 ? buttonHTML += ` <i class="w3-xlarge fa ${fontAwesomeIcon}" style="padding-right:10px"></i>` : null;
   buttonHTML += `<label class="w3-hide-small">${label}</label></button>`;
   $(selector).append($(buttonHTML));
 }
