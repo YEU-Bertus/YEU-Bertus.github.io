@@ -556,14 +556,14 @@ function generateInformJob(points, fileName) {
 
   // 1) header
   var s = ``;
-  s += `/JOB\n`;
-  s += `//NAME ${fileName}\n`;
-  s += `//POS\n`;
-  s += `///NPOS ${points.length},0,0,0,0,0\n`;
-  s += `///TOOL 0\n`;
-  s += `///POSTYPE ROBOT\n`;
-  s += `///RECTAN\n`;
-  s += `///RCONF 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n`;
+  s += `/JOB\r\n`;
+  s += `//NAME ${fileName}\r\n`;
+  s += `//POS\r\n`;
+  s += `///NPOS ${points.length},0,0,0,0,0\r\n`;
+  s += `///TOOL 0\r\n`;
+  s += `///POSTYPE ROBOT\r\n`;
+  s += `///RECTAN\r\n`;
+  s += `///RCONF 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\r\n`;
 
   // 2) Positions
   for (let i = 0; i < points.length; i++) {
@@ -580,25 +580,25 @@ function generateInformJob(points, fileName) {
     s += `${Number(Z).toFixed(3)},`;
     s += `${Number(Rx).toFixed(4)},`;
     s += `${Number(Ry).toFixed(4)},`;
-    s += `${Number(Rz).toFixed(4)}\n`;
+    s += `${Number(Rz).toFixed(4)}\r\n`;
   }
 
   // 3) Header
-  s += `//INST\n`;
-  s += `///DATE ${timeStamp()}\n`;
-  s += `///ATTR SC,RW,RJ\n`;
-  s += `////FRAME ROBOT\n`;
-  s += `///GROUP1 RB1\n`;
-  s += `NOP\n`;
+  s += `//INST\r\n`;
+  s += `///DATE ${timeStamp()}\r\n`;
+  s += `///ATTR SC,RW,RJ\r\n`;
+  s += `////FRAME ROBOT\r\n`;
+  s += `///GROUP1 RB1\r\n`;
+  s += `NOP\r\n`;
 
   // 4) Motion commands
   for (let i = 0; i < points.length; i++) {
     const speed = 100;
-    s += `MOVL C${pad(i, 5)} V=${Number(speed).toFixed(1)}\n`;
+    s += `MOVL C${pad(i, 5)} V=${Number(speed).toFixed(1)}\r\n`;
   }
 
   // 5) Footer
-  s += `END\n`;
+  s += `END\r\n`;
 
   return s;
 }
